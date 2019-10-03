@@ -43,6 +43,12 @@ public class FragmentPostFeed extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mListOfPosts = new ArrayList<>();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(WandioAPI.URL)
@@ -57,6 +63,11 @@ public class FragmentPostFeed extends Fragment {
             public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
                 assert response.body() != null;
                 mListOfPosts = response.body().getPosts();
+
+                if (view instanceof RecyclerView) {
+                    RecyclerView recyclerView = (RecyclerView) view;
+                    recyclerView.setAdapter(new AdapterPostFeed(mListOfPosts, mListener, getContext()));
+                }
             }
 
             @Override
@@ -64,17 +75,7 @@ public class FragmentPostFeed extends Fragment {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
-
-        if (view instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setAdapter(new AdapterPostFeed(mListOfPosts, mListener, getContext()));
-        }
         return view;
     }
 

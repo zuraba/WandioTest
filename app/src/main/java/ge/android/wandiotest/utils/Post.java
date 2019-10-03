@@ -1,5 +1,7 @@
 package ge.android.wandiotest.utils;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -55,6 +57,8 @@ public class Post {
         this.posts = posts;
     }
 
-
-
+    @Override
+    public boolean equals(@Nullable Object obj) {
+            return ((Post) obj).getId() == id;
+    }
 }
