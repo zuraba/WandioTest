@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ge.android.wandiotest.R;
@@ -63,10 +64,20 @@ public class FragmentPostFeed extends Fragment {
             public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
                 assert response.body() != null;
                 mListOfPosts = response.body().getPosts();
+                ArrayList<Post> newList = new ArrayList<>();
+
+                Iterator iterator = mListOfPosts.iterator();
+
+                while (iterator.hasNext()) {
+                    Post newPost = (Post)iterator.next();
+                    if(!newList.contains(newPost)) {
+                        newList.add(newPost);
+                    }
+                }
 
                 if (view instanceof RecyclerView) {
                     RecyclerView recyclerView = (RecyclerView) view;
-                    recyclerView.setAdapter(new AdapterPostFeed(mListOfPosts, mListener, getContext()));
+                    recyclerView.setAdapter(new AdapterPostFeed(newList, mListener, getContext()));
                 }
             }
 
